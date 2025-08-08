@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultra Player</title>
+<link rel="stylesheet" href="plyr.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<video id="player" playsinline controls></video>
+
+<script src="hls.js"></script>
+<script src="dash.all.min.js"></script>
+<script src="plyr.js"></script>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const videoUrl = urlParams.get('url');
+const video = document.getElementById('player');
+
+if (Hls.isSupported()) {
+  const hls = new Hls();
+  hls.loadSource('/api/stream?url=' + encodeURIComponent(videoUrl));
+  hls.attachMedia(video);
+} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+  video.src = '/api/stream?url=' + encodeURIComponent(videoUrl);
+} else {
+  video.src = '/api/stream?url=' + encodeURIComponent(videoUrl);
+}
+
+const player = new Plyr(video, { captions: { active: true } });
+</script>
+</body>
+</html>
